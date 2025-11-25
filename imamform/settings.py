@@ -131,30 +131,28 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CSRF Settings for Production
-# إذا كنت تستخدم HTTPS، قم بتغيير CSRF_COOKIE_SECURE و SESSION_COOKIE_SECURE إلى True
-CSRF_COOKIE_SECURE = False  # Set to True if using HTTPS
+# بما أن النطاق يستخدم HTTPS، يجب تفعيل هذه الإعدادات
+CSRF_COOKIE_SECURE = True  # True لأنك تستخدم HTTPS
 CSRF_COOKIE_HTTPONLY = False
 CSRF_USE_SESSIONS = False
 CSRF_COOKIE_SAMESITE = 'Lax'
 CSRF_FAILURE_VIEW = 'django.views.csrf.csrf_failure'
 
 # CSRF Trusted Origins - أضف نطاق الإنتاج هنا
-# مثال: إذا كان النطاق هو example.com، أضف:
-# 'http://example.com',
-# 'https://example.com',
+# مهم: لا تضيف / في النهاية
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost',
     'http://127.0.0.1',
     'http://localhost:8000',
     'http://127.0.0.1:8000',
-    'https://forms.imamaladham.edu.iq/',
-    # أضف نطاق الإنتاج هنا:
-    # 'http://your-production-domain.com',
-    # 'https://your-production-domain.com',
+    'https://forms.imamaladham.edu.iq',
+    'http://forms.imamaladham.edu.iq',  # في حالة استخدام HTTP أيضاً
+    'https://0.0.0.0:8090',
+    'http://0.0.0.0:8090',
 ]
 
 # Session Settings
-SESSION_COOKIE_SECURE = False  # Set to True if using HTTPS
+SESSION_COOKIE_SECURE = True  # True لأنك تستخدم HTTPS
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_AGE = 86400  # 24 hours
