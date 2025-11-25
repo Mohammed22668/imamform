@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدخال البيانات - نظام الاستمارات</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+            direction: rtl;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #667eea;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 2em;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            padding: 25px;
+            background: #f9f9f9;
+            border-radius: 10px;
+        }
+        
+        .section-title {
+            color: #333;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+        }
+        
+        input[type="text"],
+        input[type="email"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: right;
+            border: 1px solid #ddd;
+        }
+        
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+        
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            font-size: 1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .actions {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .messages {
+            margin-bottom: 20px;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .btn-add {
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            font-size: 0.9em;
+        }
+        
+        .btn-add:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+        
+        .btn-remove {
+            background: #dc3545;
+            color: white;
+            padding: 8px 15px;
+            font-size: 0.9em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .btn-remove:hover {
+            background: #c82333;
+        }
+        
+        .staff-row {
+            transition: background-color 0.3s;
+        }
+        
+        .staff-row:hover {
+            background-color: #f0f0f0 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>إدخال بيانات القسم والموظفين</h1>
+        
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="section">
+                <h2 class="section-title">بيانات القسم</h2>
+                
+                <div class="form-group">
+                    <label for="department_name">اسم القسم *</label>
+                    <input type="text" id="department_name" name="department_name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="governorate">المحافظة *</label>
+                    <select id="governorate" name="governorate" required>
+                        <option value="">اختر المحافظة</option>
+                        <option value="بغداد">بغداد</option>
+                        <option value="البصرة">البصرة</option>
+                        <option value="الموصل">الموصل</option>
+                        <option value="أربيل">أربيل</option>
+                        <option value="السليمانية">السليمانية</option>
+                        <option value="دهوك">دهوك</option>
+                        <option value="كركوك">كركوك</option>
+                        <option value="الأنبار">الأنبار</option>
+                        <option value="ديالى">ديالى</option>
+                        <option value="كربلاء">كربلاء</option>
+                        <option value="النجف">النجف</option>
+                        <option value="بابل">بابل</option>
+                        <option value="واسط">واسط</option>
+                        <option value="ميسان">ميسان</option>
+                        <option value="ذي قار">ذي قار</option>
+                        <option value="المثنى">المثنى</option>
+                        <option value="صلاح الدين">صلاح الدين</option>
+                        <option value="نينوى">نينوى</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="manager_name">اسم مدير أو رئيس القسم *</label>
+                    <input type="text" id="manager_name" name="manager_name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="manager_email">إيميل رئيس القسم</label>
+                    <input type="email" id="manager_email" name="manager_email" placeholder="example@email.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="manager_phone">رقم هاتف رئيس القسم</label>
+                    <input type="text" id="manager_phone" name="manager_phone" placeholder="07XX XXX XXXX">
+                </div>
+            </div>
+            
+            <div class="section">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 class="section-title" style="margin: 0; border: none; padding: 0;">الموظفين الذين يعملون على النظام</h2>
+                    <button type="button" class="btn btn-add" onclick="addStaffRow()">+ إضافة موظف</button>
+                </div>
+                
+                {{ formset.management_form }}
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>اسم الموظف</th>
+                            <th>العمل</th>
+                            <th>الإيميل المستخدم في النظام</th>
+                            <th>الصلاحية</th>
+                            <th>صلاحية تحتاج إلى إضافة</th>
+                            <th>صلاحية تحتاج إلى حذف</th>
+                            <th>إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="staff-table-body">
+                        {% for form in formset %}
+                        <tr class="staff-row">
+                            <td>
+                                {{ form.id }}
+                                {{ form.name }}
+                                {% if form.name.errors %}
+                                    <div style="color: red; font-size: 0.8em;">{{ form.name.errors }}</div>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {{ form.job }}
+                                {% if form.job.errors %}
+                                    <div style="color: red; font-size: 0.8em;">{{ form.job.errors }}</div>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                    <div style="color: red; font-size: 0.8em;">{{ form.email.errors }}</div>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {{ form.permission }}
+                                {% if form.permission.errors %}
+                                    <div style="color: red; font-size: 0.8em;">{{ form.permission.errors }}</div>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {{ form.permission_to_add }}
+                                {% if form.permission_to_add.errors %}
+                                    <div style="color: red; font-size: 0.8em;">{{ form.permission_to_add.errors }}</div>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {{ form.permission_to_delete }}
+                                {% if form.permission_to_delete.errors %}
+                                    <div style="color: red; font-size: 0.8em;">{{ form.permission_to_delete.errors }}</div>
+                                {% endif %}
+                            </td>
+                            <td style="text-align: center;">
+                                {% if form.DELETE %}
+                                    <div style="display: none;">{{ form.DELETE }}</div>
+                                {% endif %}
+                                <button type="button" class="btn-remove" onclick="removeRow(this)">حذف</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="actions">
+                <button type="submit" class="btn btn-primary">حفظ البيانات</button>
+                <a href="{% url 'home' %}" class="btn btn-secondary">العودة للصفحة الرئيسية</a>
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        let formCount = {{ formset.total_form_count }};
+        const maxForms = 1000; // حد أقصى للأسطر
+        
+        function updateFormCount() {
+            const totalFormsInput = document.getElementById('id_form-TOTAL_FORMS');
+            if (totalFormsInput) {
+                totalFormsInput.value = formCount;
+            }
+        }
+        
+        function addStaffRow() {
+            if (formCount >= maxForms) {
+                alert('تم الوصول إلى الحد الأقصى لعدد الموظفين');
+                return;
+            }
+            
+            const tableBody = document.getElementById('staff-table-body');
+            const firstRow = tableBody.querySelector('.staff-row');
+            
+            if (!firstRow) {
+                alert('خطأ: لم يتم العثور على صف للنسخ');
+                return;
+            }
+            
+            // إنشاء صف جديد
+            const newRow = firstRow.cloneNode(true);
+            
+            // تحديث أسماء الحقول والفهارس
+            const inputs = newRow.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                if (input.name) {
+                    // تحديث الفهرس في الاسم - البحث عن أي رقم بين form- و -
+                    input.name = input.name.replace(/form-\d+-/, 'form-' + formCount + '-');
+                    
+                    // تحديث الفهرس في الـ ID
+                    if (input.id) {
+                        input.id = input.id.replace(/id_form-\d+-/, 'id_form-' + formCount + '-');
+                    }
+                    
+                    // مسح القيم
+                    if (input.type === 'checkbox') {
+                        if (input.name.includes('-DELETE')) {
+                            input.checked = false; // إلغاء تفعيل checkbox DELETE
+                        }
+                    } else if (input.type === 'hidden') {
+                        // الحقول المخفية (مثل id) تبقى كما هي
+                    } else {
+                        input.value = ''; // مسح القيم للحقول الأخرى
+                    }
+                }
+            });
+            
+            // إعادة تفعيل الحقول المعطلة
+            const disabledInputs = newRow.querySelectorAll('input[disabled], select[disabled]');
+            disabledInputs.forEach(input => {
+                input.disabled = false;
+            });
+            
+            // إعادة تعيين الأنماط
+            newRow.style.opacity = '1';
+            newRow.style.backgroundColor = '';
+            
+            // إزالة رسائل الخطأ إن وجدت
+            const errorDivs = newRow.querySelectorAll('div[style*="color: red"]');
+            errorDivs.forEach(div => div.remove());
+            
+            // إضافة الصف الجديد
+            tableBody.appendChild(newRow);
+            formCount++;
+            updateFormCount();
+        }
+        
+        function removeRow(button) {
+            const row = button.closest('.staff-row');
+            const tableBody = document.getElementById('staff-table-body');
+            const rows = tableBody.querySelectorAll('.staff-row');
+            
+            // منع حذف آخر صف
+            if (rows.length <= 1) {
+                alert('يجب أن يكون هناك صف واحد على الأقل');
+                return;
+            }
+            
+            // البحث عن checkbox DELETE وتفعيله
+            const deleteCheckbox = row.querySelector('input[type="checkbox"][name*="-DELETE"]');
+            if (deleteCheckbox) {
+                deleteCheckbox.checked = true;
+                row.style.opacity = '0.5';
+                row.style.backgroundColor = '#f8d7da';
+                // إخفاء الحقول في الصف المحذوف
+                const inputs = row.querySelectorAll('input:not([type="checkbox"]), select');
+                inputs.forEach(input => {
+                    input.disabled = true;
+                });
+            } else {
+                // إذا لم يكن هناك checkbox DELETE، احذف الصف مباشرة
+                row.remove();
+                formCount--;
+                updateFormCount();
+            }
+        }
+        
+        // تحديث العدد عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            updateFormCount();
+        });
+    </script>
+</body>
+</html>
+

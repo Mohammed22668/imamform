@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تفاصيل الطلب - نظام الاستمارات</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+            direction: rtl;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #667eea;
+        }
+        
+        h1 {
+            color: #667eea;
+            font-size: 2em;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            padding: 25px;
+            background: #f9f9f9;
+            border-radius: 10px;
+        }
+        
+        .section-title {
+            color: #333;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .info-row {
+            display: flex;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: #667eea;
+            width: 200px;
+        }
+        
+        .info-value {
+            color: #333;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: right;
+            border: 1px solid #ddd;
+        }
+        
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+        
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            font-size: 1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>تفاصيل الطلب</h1>
+            <div>
+                <a href="{% url 'dashboard' %}" class="btn btn-secondary" style="margin-left: 10px;">لوحة التحكم</a>
+                <a href="{% url 'requests_list' %}" class="btn btn-secondary">العودة للقائمة</a>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">بيانات القسم</h2>
+            
+            <div class="info-row">
+                <span class="info-label">اسم القسم:</span>
+                <span class="info-value">{{ department.name }}</span>
+            </div>
+            
+            <div class="info-row">
+                <span class="info-label">المحافظة:</span>
+                <span class="info-value">{{ department.governorate }}</span>
+            </div>
+            
+            <div class="info-row">
+                <span class="info-label">اسم مدير/رئيس القسم:</span>
+                <span class="info-value">{{ department.manager_name }}</span>
+            </div>
+            
+            {% if department.manager_email %}
+            <div class="info-row">
+                <span class="info-label">إيميل رئيس القسم:</span>
+                <span class="info-value">{{ department.manager_email }}</span>
+            </div>
+            {% endif %}
+            
+            {% if department.manager_phone %}
+            <div class="info-row">
+                <span class="info-label">رقم هاتف رئيس القسم:</span>
+                <span class="info-value">{{ department.manager_phone }}</span>
+            </div>
+            {% endif %}
+            
+            <div class="info-row">
+                <span class="info-label">تاريخ الإدخال:</span>
+                <span class="info-value">{{ department.created_at|date:"Y-m-d H:i" }}</span>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">الموظفين الذين يعملون على النظام</h2>
+            
+            {% if staff_members %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>اسم الموظف</th>
+                        <th>العمل</th>
+                        <th>الإيميل المستخدم في النظام</th>
+                        <th>الصلاحية</th>
+                        <th>صلاحية تحتاج إلى إضافة</th>
+                        <th>صلاحية تحتاج إلى حذف</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for staff in staff_members %}
+                    <tr>
+                        <td>{{ staff.name }}</td>
+                        <td>{{ staff.job }}</td>
+                        <td>{{ staff.email }}</td>
+                        <td>{{ staff.get_permission_display }}</td>
+                        <td>{{ staff.permission_to_add|default:"-" }}</td>
+                        <td>{{ staff.permission_to_delete|default:"-" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p style="text-align: center; color: #999; padding: 20px;">لا يوجد موظفين مسجلين</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
+
