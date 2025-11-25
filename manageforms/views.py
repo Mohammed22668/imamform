@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import FormDepartment, StaffDetails
 from django.forms import modelformset_factory
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 # الصفحة الترحيبية
 def home(request):
@@ -48,6 +49,7 @@ def form_page(request):
     return render(request, 'manageforms/form.html', {'formset': formset})
 
 # صفحة تسجيل الدخول
+@ensure_csrf_cookie
 def login_view(request):
     if request.user.is_authenticated:
         return redirect('dashboard')
@@ -55,6 +57,11 @@ def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
+        
+        if not username or not password:
+            messages.error(request, 'يرجى إدخال اسم المستخدم وكلمة المرور')
+            return render(request, 'manageforms/login.html')
+        
         user = authenticate(request, username=username, password=password)
         
         if user is not None:
