@@ -113,6 +113,20 @@
         .actions-cell {
             display: flex;
             gap: 10px;
+            align-items: center;
+        }
+        
+        .actions-cell form {
+            margin: 0;
+        }
+        
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-delete:hover {
+            background: #c82333;
         }
         
         .search-section {
@@ -250,6 +264,10 @@
                     <td>{{ department.created_at|date:"Y-m-d H:i" }}</td>
                     <td class="actions-cell">
                         <a href="{% url 'request_detail' department.id %}" class="btn btn-primary">عرض التفاصيل</a>
+                        <form method="post" action="{% url 'delete_request' department.id %}" onsubmit="return confirm('هل أنت متأكد من حذف هذا الطلب وجميع بياناته؟');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-delete">حذف الطلب</button>
+                        </form>
                     </td>
                 </tr>
                 {% endfor %}
